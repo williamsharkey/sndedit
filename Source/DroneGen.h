@@ -36,10 +36,17 @@ public:
 		AudioSourcePlayer player;
 		player.setSource(&source);
 		source.mDeviceManager.addAudioCallback(&player);
-		Thread::sleep(1000 * seconds);
+		std::cout << " [";
+		for (int i=0;i<seconds;i++){
+			
+			Thread::sleep(1000 * seconds);
+			std::cout << ".";
+		}
+		std::cout << "]";
+		
 		source.mDeviceManager.removeAudioCallback(&player);
 		player.setSource(0);
-		std::cout << "Hello from play drone" << std::endl;
+		//std::cout << "Hello from play drone" << std::endl;
 	}
 
 	void prepareToPlay(int samplesPerBlockExpected,
