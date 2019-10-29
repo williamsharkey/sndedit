@@ -1,4 +1,4 @@
-/*
+﻿/*
 ==============================================================================
 
 AudioGen.h
@@ -31,15 +31,16 @@ public:
 	~DroneGen() {}
 
 	static void playDrone(int seconds) {
+		
 		DroneGen source;
 		source.mDeviceManager.initialise(0, 2, 0, false);
 		AudioSourcePlayer player;
 		player.setSource(&source);
 		source.mDeviceManager.addAudioCallback(&player);
 		std::cout << " [";
-		for (int i=0;i<seconds;i++){
+		for (int i=0;i<seconds*10;i++){
 			
-			Thread::sleep(1000 * seconds);
+			Thread::sleep(100 * seconds);
 			std::cout << ".";
 		}
 		std::cout << "]";

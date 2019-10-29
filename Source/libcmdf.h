@@ -275,10 +275,10 @@ void cmdf__print_title(const char *title, char ruler) {
     size_t i = 0;
 
     fprintf(CMDF_STDOUT, "\n%s\n", title);
-
-    for (i = 0; i < strlen(title) + 1; i++)
+	putc(' ', CMDF_STDOUT);
+    for (i = 1; i < strlen(title) + 1 -1 ; i++)
         putc(ruler, CMDF_STDOUT);
-
+	putc(' ', CMDF_STDOUT);
     putc('\n', CMDF_STDOUT);
 }
 
