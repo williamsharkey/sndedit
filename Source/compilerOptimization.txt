@@ -1,0 +1,3 @@
+Linker Optimizations - use link time optimization (not fast link time opto)
+C++ Optimization - /O1 max favor size
+output win32 not x64

@@ -1,6 +1,5 @@
 ﻿#include "../JuceLibraryCode/JuceHeader.h"
 #include "DroneGen.h"
-#include "rang.h"
 #define LIBCMDF_IMPL
 #include "libcmdf.h" 
 #include "doDrone.h"
@@ -11,11 +10,6 @@
                        "As you can see, this is concatenated properly. It's pretty good!"
 #define PRINTARGS_UNDOC_HELP "These are undocumented commands.\n" \
                        "Use at your own risk?"
-static CMDF_RETURN do_hello(cmdf_arglist* arglist) {
-	std::cout << "Hello, world!" << std::endl;
-
-	return CMDF_OK;
-}
 
 static CMDF_RETURN do_printargs(cmdf_arglist* arglist) {
 	if (!arglist) {
@@ -41,18 +35,16 @@ int main(int argc, char* argv[])
 	auto q = static_cast<const char*>(ss.toUTF8());
 	cmdf_init( " sndedit > ",  q, PROG_INTRO, PRINTARGS_UNDOC_HELP, '-', 1);
 
-	cmdf_register_command(do_hello, "hello", "prints hello world");
+
 	cmdf_register_command(do_printargs, "printargs", PRINTARGS_HELP);
 	cmdf_register_command(doDrone, "drone", "plays a drone for specified number of seconds");
+	cmdf_register_command(doTone, "tone", "plays a tone for specified number of seconds at specified hz");
 	cmdf_register_command(doDrone, "udrone", 0);
 	
 
 
 	juce::initialiseJuce_GUI();
 	cmdf_commandloop();
-
-	//DroneGen::playDrone(2);
-	//std::cout << rang::bg::blue <<rang::fgB::magenta << "hello blue world"  << rang::bg::reset<<rang::fg::reset<<std::endl<<"goodbye"<<std::endl;
 	juce::shutdownJuce_GUI();
 	return 0;
 }
