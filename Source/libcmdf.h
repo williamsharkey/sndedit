@@ -203,7 +203,8 @@ static struct cmdf__settings_s {
     char ruler;
 
     /* Counters */
-    int undoc_cmds, doc_cmds, entry_count;
+	int undoc_cmds, doc_cmds;
+	size_t entry_count;
 
     /* Flags */
     int exit_flag;
@@ -330,7 +331,7 @@ void cmdf__pprint(size_t loffset, const char * const strtoprint) {
 }
 
 void cmdf__print_command_list(void) {
-    int i, printed;
+    size_t i, printed;
     const struct cmdf_windowsize winsize = cmdf_get_window_size();
 
     /* Print documented commands */
@@ -338,7 +339,7 @@ void cmdf__print_command_list(void) {
     for (i = 0, printed = 0; i < cmdf__settings.entry_count; i++) {
         if (cmdf__entries[i].help) {
             /* Check if we need to break into the next line. */
-            if (printed + strlen(cmdf__entries[i].cmdname) + 1 >= winsize.w) {
+            if (printed + strlen(cmdf__entries[i].cmdname) + (size_t)1 >= (size_t)winsize.w) {
                 printed = 0;
                 fputc('\n', CMDF_STDOUT);
             }
@@ -357,7 +358,7 @@ void cmdf__print_command_list(void) {
         for (i = 0, printed = 0; i < cmdf__settings.entry_count; i++) {
             if (!cmdf__entries[i].help) {
                 /* Check if we need to break into the next line. */
-                if (printed + strlen(cmdf__entries[i].cmdname) + 1 >= winsize.w) {
+                if (printed + strlen(cmdf__entries[i].cmdname) + (size_t)1 >= (size_t)winsize.w) {
                     printed = 0;
                     fputc('\n', CMDF_STDOUT);
                 }
@@ -631,7 +632,7 @@ CMDF_RETURN cmdf_register_command(cmdf_command_callback callback, const char *cm
 
 /* Default callbacks */
 CMDF_RETURN cmdf__default_do_help(cmdf_arglist *arglist) {
-	int i;
+	size_t i;
 	size_t offset;
 
     /* If no arguments provided, print all help listing.
@@ -685,7 +686,7 @@ CMDF_RETURN cmdf__default_do_exit(cmdf_arglist *) {
 //}
 
 CMDF_RETURN cmdf__default_do_command(const char *cmdname, cmdf_arglist *arglist) {
-    int i;
+    size_t i;
 
     /* Iterate through the commands list. Find and execute the appropriate command */
     for (i = 0; i < cmdf__settings.entry_count; i++)
