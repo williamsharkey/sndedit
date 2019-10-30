@@ -32,19 +32,15 @@ static CMDF_RETURN doTone(cmdf_arglist * arglist) {
 		return CMDF_OK;
 	}
 
-	for (size_t i = 0; i < arglist->count; i++)
+	
+		std::cout	<< "       seconds    : " << atoi(arglist->args[0]) << std::endl
+	
+					<< "       hz         : " << atoi(arglist->args[1]) << std::endl;
+	
+
+	for (size_t i = 2; i < arglist->count; i++)
 	{
-		if (i == 0)
-		{
-			std::cout << "       seconds    : " << atoi(arglist->args[i]) << std::endl;
-		} else if (i == 1)
-		{
-			std::cout << "       hz         : " << atoi(arglist->args[i]) << std::endl;
-		}
-		else
-		{
-			std::cout << "       unused arg : " << i + 1 << ": \'" << arglist->args[i] << "\'" << std::endl;
-		}
+			std::cout << "       unused arg : " << i + 1 << ": \'" << arglist->args[i] << "\'" << std::endl;	
 	}
 
 	const auto seconds = atoi(arglist->args[0]);
