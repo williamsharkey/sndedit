@@ -27,7 +27,7 @@ static CMDF_RETURN do_printargs(cmdf_arglist* arglist) {
 }
 
 
-int main(int argc, char* argv[])
+int main(int, char* [])
 {
 	auto f = new File(File::getSpecialLocation(File::currentExecutableFile));
 	auto s = f->getSize();

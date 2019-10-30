@@ -159,7 +159,7 @@ CMDF_RETURN cmdf_register_command(cmdf_command_callback callback, const char *cm
 /* Default callbacks */
 CMDF_RETURN cmdf__default_do_help(cmdf_arglist *arglist);
 CMDF_RETURN cmdf__default_do_command(const char *cmdname, cmdf_arglist *arglist);
-//CMDF_RETURN cmdf__default_do_emptyline(cmdf_arglist *arglist /* Unused */);
+CMDF_RETURN cmdf__default_do_emptyline(cmdf_arglist *arglist /* Unused */);
 CMDF_RETURN cmdf__default_do_exit(cmdf_arglist *arglist /* Unused */);
 //CMDF_RETURN cmdf__default_do_noop(cmdf_arglist *arglist /* Unused */);
 void cmdf__default_commandloop(void);
@@ -386,7 +386,7 @@ void cmdf_init(const char *prompt, const char *intro, const char *doc_header,
 
     /* Set command callbacks */
     cmdf__settings.do_command = cmdf__default_do_command;
-    //cmdf__settings.do_emptyline = cmdf__default_do_emptyline;
+    cmdf__settings.do_emptyline = cmdf__default_do_emptyline;
 
     /* Register help callback */
     cmdf_register_command(cmdf__default_do_help, "help", "Get information on a command" \
@@ -670,11 +670,11 @@ CMDF_RETURN cmdf__default_do_help(cmdf_arglist *arglist) {
     return CMDF_OK;
 }
 
-//CMDF_RETURN cmdf__default_do_emptyline(cmdf_arglist *arglist /* Unusued */) {
-//    return CMDF_OK;
-//}
+CMDF_RETURN cmdf__default_do_emptyline(cmdf_arglist *) {
+    return CMDF_OK;
+}
 
-CMDF_RETURN cmdf__default_do_exit(cmdf_arglist *arglist /* Unused */) {
+CMDF_RETURN cmdf__default_do_exit(cmdf_arglist *) {
     cmdf__settings.exit_flag = 1;
 
     return CMDF_OK;
@@ -740,7 +740,8 @@ void cmdf__default_commandloop(void) {
 
         /* Split by first space.
          * This should be the command, followed by arguments. */
-		if ((spcptr = strchr(inputbuff, ' '))) {
+		spcptr = strchr(inputbuff, ' ');
+		if (spcptr) {
             *spcptr = '\0';
 
             cmdptr = inputbuff;

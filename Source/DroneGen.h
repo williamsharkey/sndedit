@@ -48,8 +48,7 @@ public:
 		//std::cout << "Hello from play drone" << std::endl;
 	}
 
-	void prepareToPlay(int samplesPerBlockExpected,
-		double sampleRate) override {
+	void prepareToPlay(int , double ) override {
 	}
 
 	void releaseResources() override {
@@ -127,7 +126,7 @@ public:
 		player.setSource(0);
 	}
 
-	void prepareToPlay(int samplesPerBlockExpected,	double sampleRate) override {	}
+	void prepareToPlay(int,	double) override {	}
 
 	void releaseResources() override {	}
 
