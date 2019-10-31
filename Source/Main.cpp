@@ -27,6 +27,7 @@ static CMDF_RETURN do_printargs(cmdf_arglist* arglist) {
 }
 
 int selectedDevice = 0;
+//juce::MidiOutput device = NULL;
 
 static CMDF_RETURN midiOut(cmdf_arglist* arglist) {
 	if (!arglist || arglist->count < 2 ) {
@@ -53,12 +54,46 @@ static CMDF_RETURN midiOut(cmdf_arglist* arglist) {
 		return CMDF_OK;
 	}
 	auto d = juce::MidiOutput::openDevice(devices[selectedDevice].identifier);
-	auto mon = MidiMessage::noteOn(0, note,  (juce::uint8)100);
+	auto mon = MidiMessage::noteOn(1, note,  (juce::uint8)100);
+	//mon.setTimeStamp(1);
 
-	(*d).sendMessageNow(mon);
-	Thread::sleep(dur);
-	auto moff = MidiMessage::noteOn(0, note,(juce::uint8)0);
-	(*d).sendMessageNow(moff);
+	//(*d).sendMessageNow(mon);
+	//Thread::sleep(dur);
+	auto moff = MidiMessage::noteOn(1, note,(juce::uint8)0);
+	//moff.setTimeStamp(2);
+	
+	auto mb = new MidiBuffer();
+	(*mb).addEvent(mon,44100*4);
+	std::cout << ((int)(44.1*dur)) << std::endl;
+	(*mb).addEvent(moff, 4*44100+((int)(44.1*dur)));
+
+	//(*d).sendMessageNow(moff);
+	(*d).startBackgroundThread();
+	
+	(*d).sendBlockOfMessagesNow(*mb);
+	delete mb;
+	return CMDF_OK;
+}
+
+static CMDF_RETURN notesOff(cmdf_arglist*) {
+	
+	auto devices = juce::MidiOutput::getAvailableDevices();
+	if (devices.size() == 0) {
+		std::cout << "  no midi devices!" << std::endl;
+		return CMDF_OK;
+
+	}
+	if (devices.size() <= selectedDevice) {
+		std::cout << "  cannot send midi to selected device #" << selectedDevice << " because there are only " << devices.size() << " devices available" << std::endl;
+		return CMDF_OK;
+	}
+	auto d = juce::MidiOutput::openDevice(devices[selectedDevice].identifier);
+	
+	auto notesoff = MidiMessage::allSoundOff(1);
+	notesoff.setTimeStamp(1);
+
+	(*d).sendMessageNow(notesoff);
+	
 	return CMDF_OK;
 }
 
@@ -110,6 +145,7 @@ int main(int, char* [])
 	cmdf_register_command(doDrone, "drone", "plays a drone for specified number of seconds");
 	cmdf_register_command(doTone, "tone", "plays a tone for specified number of seconds at specified hz");
 	cmdf_register_command(midiOut, "midi", "outputs a midi note to a device");
+	cmdf_register_command(notesOff, "off", "turns all notes off");
 	cmdf_register_command(devices, "devices", "list midi devices");
 	cmdf_register_command(selectDevice, "select", "select midi device");
 
