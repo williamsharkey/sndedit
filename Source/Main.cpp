@@ -26,6 +26,76 @@ static CMDF_RETURN do_printargs(cmdf_arglist* arglist) {
 	return CMDF_OK;
 }
 
+int selectedDevice = 0;
+
+static CMDF_RETURN midiOut(cmdf_arglist* arglist) {
+	if (!arglist || arglist->count < 2 ) {
+		std::cout << " 2 arguments required, " << arglist->count << " given" << std::endl;
+		return CMDF_OK;
+	}
+
+	auto note = atoi(arglist->args[0]);
+	std::cout << "  note number   : " << note <<  std::endl;
+	
+	auto dur = atoi(arglist->args[1]);
+	std::cout << "  duration in ms: " << dur << std::endl;
+	for (size_t i = 2; i < arglist->count; i++)
+		std::cout << "  extra argument: " << arglist->args[i] << std::endl;
+
+	auto devices = juce::MidiOutput::getAvailableDevices();
+	if (devices.size() == 0) {
+		std::cout << "  no midi devices!" << std::endl;
+		return CMDF_OK;
+	
+	}
+	if (devices.size() <= selectedDevice) {
+		std::cout << "  cannot send midi to selected device #"<< selectedDevice<<" because there are only "<<devices.size() <<" devices available" << std::endl;
+		return CMDF_OK;
+	}
+	auto d = juce::MidiOutput::openDevice(devices[selectedDevice].identifier);
+	auto mon = MidiMessage::noteOn(0, note,  (juce::uint8)100);
+
+	(*d).sendMessageNow(mon);
+	Thread::sleep(dur);
+	auto moff = MidiMessage::noteOn(0, note,(juce::uint8)0);
+	(*d).sendMessageNow(moff);
+	return CMDF_OK;
+}
+
+
+
+static CMDF_RETURN selectDevice(cmdf_arglist* arglist) {
+	if (!arglist || arglist->count != 1) {
+		std::cout << "  1 argument required to select a device, " << arglist->count << " given" << std::endl;
+		return CMDF_OK;
+	}
+
+	selectedDevice = atoi(arglist->args[0]);
+
+	auto devices = juce::MidiOutput::getAvailableDevices();
+	if (devices.size() <= selectedDevice) {
+		std::cout << "  selected midi device #"<<selectedDevice<< ",  however there are only "<<devices.size() << " available" << std::endl;
+		
+	}
+	for (int i = 0; i < devices.size(); i++)
+
+		std::cout << "  "<< ((i == selectedDevice) ? "[" : " ") << i << ((i == selectedDevice) ? "]" : " ") << " : " << devices[i].name << ((i == selectedDevice) ? " (selected)" : "") << std::endl; //devices[i].identifier
+	return CMDF_OK;
+
+}
+
+static CMDF_RETURN devices(cmdf_arglist* ) {
+	
+	auto devices = juce::MidiOutput::getAvailableDevices();
+	if (devices.size() == 0) {
+		std::cout << "No midi devices!" << std::endl;
+		return CMDF_OK;
+	}
+	for (int i = 0; i < devices.size(); i++)
+		std::cout << "  " << ((i == selectedDevice) ? "[" : " ") << i << ((i == selectedDevice) ? "]" : " ") << " : " << devices[i].name << ((i == selectedDevice) ? " (selected)" : "") << std::endl; //devices[i].identifier
+
+	return CMDF_OK;
+}
 
 int main(int, char* [])
 {
@@ -39,8 +109,9 @@ int main(int, char* [])
 	cmdf_register_command(do_printargs, "printargs", PRINTARGS_HELP);
 	cmdf_register_command(doDrone, "drone", "plays a drone for specified number of seconds");
 	cmdf_register_command(doTone, "tone", "plays a tone for specified number of seconds at specified hz");
-	cmdf_register_command(doDrone, "udrone", 0);
-	
+	cmdf_register_command(midiOut, "midi", "outputs a midi note to a device");
+	cmdf_register_command(devices, "devices", "list midi devices");
+	cmdf_register_command(selectDevice, "select", "select midi device");
 
 
 	juce::initialiseJuce_GUI();

@@ -38,7 +38,7 @@ public:
 		std::cout << " [";
 		for (int i = 0; i < seconds * 10; i++) {
 
-			Thread::sleep(100 * seconds);
+			Thread::sleep(100 );
 			std::cout << ".";
 		}
 		std::cout << "]";
@@ -117,7 +117,7 @@ public:
 		std::cout << " [";
 		for (int i = 0; i < seconds * 10; i++) {
 
-			Thread::sleep(100 * seconds);
+			Thread::sleep(100);
 			std::cout << ".";
 		}
 		std::cout << "]";
