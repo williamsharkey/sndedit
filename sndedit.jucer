@@ -6,7 +6,6 @@
       <FILE id="N7gp7r" name="DroneGen.h" compile="0" resource="0" file="Source/DroneGen.h"/>
       <FILE id="NZ7SMH" name="libcmdf.h" compile="0" resource="0" file="Source/libcmdf.h"/>
       <FILE id="tm9XKS" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
-      <FILE id="DOK9rf" name="rang.h" compile="0" resource="0" file="Source/rang.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
