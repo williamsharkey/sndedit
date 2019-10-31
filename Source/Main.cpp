@@ -27,6 +27,7 @@ static CMDF_RETURN do_printargs(cmdf_arglist* arglist) {
 }
 
 int selectedDevice = 0;
+int selectedAudioDevice = 0;
 //juce::MidiOutput device = NULL;
 
 static CMDF_RETURN midiOut(cmdf_arglist* arglist) {
@@ -119,7 +120,7 @@ static CMDF_RETURN selectDevice(cmdf_arglist* arglist) {
 
 }
 
-static CMDF_RETURN devices(cmdf_arglist* ) {
+static CMDF_RETURN midiDevices(cmdf_arglist* ) {
 	
 	auto devices = juce::MidiOutput::getAvailableDevices();
 	if (devices.size() == 0) {
@@ -128,6 +129,25 @@ static CMDF_RETURN devices(cmdf_arglist* ) {
 	}
 	for (int i = 0; i < devices.size(); i++)
 		std::cout << "  " << ((i == selectedDevice) ? "[" : " ") << i << ((i == selectedDevice) ? "]" : " ") << " : " << devices[i].name << ((i == selectedDevice) ? " (selected)" : "") << std::endl; //devices[i].identifier
+
+	return CMDF_OK;
+}
+
+static CMDF_RETURN audioDevices(cmdf_arglist*) {
+	AudioDeviceManager dm;
+
+	auto devices = &dm.getAvailableDeviceTypes();
+	if (devices->size() == 0) {
+		std::cout << "No midi devices!" << std::endl;
+		return CMDF_OK;
+	}
+	for (int i = 0; i < devices->size(); i++) {
+		auto x = devices->getUnchecked(i);
+		auto sel = (i == selectedAudioDevice);
+
+		std::cout << "  " << ( sel ? "[" : " ") << i << (sel ? "]" : " ") << " : " << x->getTypeName() << (sel ? " (selected)" : "") << std::endl; 
+	}
+		
 
 	return CMDF_OK;
 }
@@ -146,7 +166,8 @@ int main(int, char* [])
 	cmdf_register_command(doTone, "tone", "plays a tone for specified number of seconds at specified hz");
 	cmdf_register_command(midiOut, "midi", "outputs a midi note to a device");
 	cmdf_register_command(notesOff, "off", "turns all notes off");
-	cmdf_register_command(devices, "devices", "list midi devices");
+	cmdf_register_command(midiDevices, "lm", "list midi devices");
+	cmdf_register_command(audioDevices, "la", "list audio devices");
 	cmdf_register_command(selectDevice, "select", "select midi device");
 
 
