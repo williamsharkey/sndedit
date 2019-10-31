@@ -140,7 +140,7 @@ const char *cmdf_get_intro(void);
 const char *cmdf_get_doc_header(void);
 const char *cmdf_get_undoc_header(void);
 char cmdf_get_ruler(void);
-int cmdf_get_command_count(void);
+size_t cmdf_get_command_count(void);
 
 /* Setters */
 void cmdf_set_prompt(const char *new_prompt);
@@ -203,7 +203,7 @@ static struct cmdf__settings_s {
     char ruler;
 
     /* Counters */
-	int undoc_cmds, doc_cmds;
+	size_t undoc_cmds, doc_cmds;
 	size_t entry_count;
 
     /* Flags */
@@ -429,7 +429,7 @@ char cmdf_get_ruler(void) {
     return cmdf__settings.ruler;
 }
 
-int cmdf_get_command_count(void) {
+size_t cmdf_get_command_count(void) {
     return cmdf__settings.entry_count;
 }
 
