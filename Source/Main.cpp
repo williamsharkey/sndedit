@@ -1,11 +1,11 @@
-﻿#include "../JuceLibraryCode/JuceHeader.h"
+#include "../JuceLibraryCode/JuceHeader.h"
 #include "DroneGen.h"
 #define LIBCMDF_IMPL
 #include "libcmdf.h" 
 #include "doDrone.h"
 
-#define PROG_INTRO "test - A simple test program for libcmdf.\n" \
-	"You can use this as a reference on how to use the library!"
+#define PROG_INTRO "    sndedit\n" \
+	"    command line sound editing."
 #define PRINTARGS_HELP "This is a very long help string for a command.\n" \
                        "As you can see, this is concatenated properly. It's pretty good!"
 #define PRINTARGS_UNDOC_HELP "These are undocumented commands.\n" \
@@ -102,18 +102,32 @@ static CMDF_RETURN notesOff(cmdf_arglist*) {
 
 static CMDF_RETURN selectDevice(cmdf_arglist* arglist) {
 	if (!arglist || arglist->count != 1) {
-		std::cout << "  1 argument required to select a device, " << arglist->count << " given" << std::endl;
+        size_t x = (!arglist) ? 0 : arglist->count;
+		std::cout << "  1 argument required to select a device, " << x << " given" << std::endl;
 		return CMDF_OK;
 	}
 
 	selectedDevice = atoi(arglist->args[0]);
 
 	auto devices = juce::MidiOutput::getAvailableDevices();
-	if (devices.size() <= selectedDevice) {
-		std::cout << "  selected midi device #"<<selectedDevice<< ",  however there are only "<<devices.size() << " available" << std::endl;
+	
+	int devicesCount = devices.size();
+	
+	
+	
+    std::cout << "  device cnt "<<devicesCount <<std::endl;
+    
+	
+    if (devicesCount == 0) {
+		std::cout << "  no midi devices!" << std::endl;
+		return CMDF_OK;
+	}
+	
+    if (devicesCount <= selectedDevice) {
+		std::cout << "  selected midi device #"<<selectedDevice<< ",  however there are only "<<devicesCount << " available" << std::endl;
 		
 	}
-	for (int i = 0; i < devices.size(); i++)
+	for (int i = 0; i < devicesCount; i++)
 
 		std::cout << "  "<< ((i == selectedDevice) ? "[" : " ") << i << ((i == selectedDevice) ? "]" : " ") << " : " << devices[i].name << ((i == selectedDevice) ? " (selected)" : "") << std::endl; //devices[i].identifier
 	return CMDF_OK;

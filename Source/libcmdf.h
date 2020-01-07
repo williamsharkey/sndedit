@@ -194,7 +194,7 @@ static const char *cmdf__default_prompt = "(libcmdf) ";
 static const char *cmdf__default_intro = "";
 static const char *cmdf__default_doc_header = "Documented Commands:";
 static const char *cmdf__default_undoc_header = "Undocumented Commands:";
-static const char cmdf__default_ruler = '=';
+
 
 /* libcmdf settings */
 static struct cmdf__settings_s {
@@ -273,12 +273,11 @@ void cmdf__trim(char *src) {
 }
 
 void cmdf__print_title(const char *title, char ruler) {
-    size_t i = 0;
+    
 
     fprintf(CMDF_STDOUT, "\n%s\n", title);
 	putc(' ', CMDF_STDOUT);
-    for (i = 1; i < strlen(title) + 1 -1 ; i++)
-        putc(ruler, CMDF_STDOUT);
+    
 	putc(' ', CMDF_STDOUT);
     putc('\n', CMDF_STDOUT);
 }
@@ -382,7 +381,6 @@ void cmdf_init(const char *prompt, const char *intro, const char *doc_header,
     cmdf__settings.doc_header = doc_header ? doc_header : cmdf__default_doc_header;
     cmdf__settings.undoc_header = 
         undoc_header ? undoc_header : cmdf__default_undoc_header;
-    cmdf__settings.ruler = ruler ? ruler : cmdf__default_ruler;
     cmdf__settings.doc_cmds = cmdf__settings.undoc_cmds = cmdf__settings.entry_count = 0;
 
     /* Set command callbacks */
@@ -760,7 +758,7 @@ void cmdf__default_commandloop(void) {
         retflag = cmdf__settings.do_command(cmdptr, cmd_args);
         switch (retflag) {
             case CMDF_ERROR_UNKNOWN_COMMAND:
-                fprintf(CMDF_STDOUT, "Unknown command '%s'.\n", cmdptr);
+                fprintf(CMDF_STDOUT, "  unknown command '%s'.\n", cmdptr);
                 break;
         }
 
